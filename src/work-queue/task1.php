@@ -32,7 +32,8 @@ $msg = new AMQPMessage($data, ['delivery_mode' => AMQPMessage::DELIVERY_MODE_PER
 // Publish message to queue
 $channel->basic_publish($msg, '', $queue);
 
-echo " [x] Sent '{$data}'\n";
+$datetime = date('Y-m-d H:i:s');;
+echo " [x] Sent [{$datetime}] '{$data}'\n";
 
 $channel->close();
 $connection->close();
