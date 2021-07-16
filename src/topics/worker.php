@@ -38,7 +38,7 @@ foreach ($binding_keys as $binding_key) {
 echo " [*] Waiting for messages. To exit press CTRL+C\n";
 
 $callback = function ($msg) {
-    echo " [x] Received ", "[", date('y-md H:i:s'), "] ", $msg->delivery_info['routing_key'], ':', $msg->body, "\n";
+    echo " [x] Received ", "[", date('y-md H:i:s'), "] ", $msg->delivery_info['routing_key'], ': ', $msg->body, "\n";
 };
 
 // Listen messages from queue
@@ -50,3 +50,13 @@ while ($channel->is_open()) {
 
 $channel->close();
 $connection->close();
+
+// Commands:
+// - To receive all the logs
+//   php worker.php "#"
+// - To receive all logs from the facility "kern"
+//   php worker.php "kern.*"
+// - Or if you want to hear only about "critical" logs
+//   php worker.php "*.critical"
+// - You can create multiple bindings:
+//   php worker.php "kern.*" "*.critical"
