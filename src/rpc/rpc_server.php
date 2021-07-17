@@ -16,6 +16,7 @@ $queue = 'rpc_queue';
 
 $channel->queue_declare($queue, false, false, false, false);
 
+// Calculate fibonacci
 function fib($n) {
     if ($n == 0) {
         return 0;
@@ -29,19 +30,21 @@ function fib($n) {
 echo " [x] Awaiting RPC requests\n";
 
 $callback = function ($req) {
+    // Calculate fibonacci based on input from client
     $n = intval($req->body);
     echo ' [.] fib(', $n, ")\n";
-
+    // Create message for sending result back client
     $msg = new AMQPMessage(
         (string) fib($n),
-        array('correlation_id' => $req->get('correlation_id'))
+        ['correlation_id' => $req->get('correlation_id')]
     );
-
+    // Send result calculated back to client
     $req->delivery_info['channel']->basic_publish(
         $msg,
         '',
         $req->get('reply_to')
     );
+    // Send back queue if error
     $req->ack();
 };
 
